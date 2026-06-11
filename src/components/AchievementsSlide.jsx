@@ -208,6 +208,7 @@ const TargetCard = ({ target, index, isHovered, setHovered, active, direction })
 
 export default function AchievementsSlide({ active, direction = 'down' }) {
   const [isHovered, setHovered] = useState(false);
+  const johnImageSrc = `${import.meta.env.BASE_URL}slide3-bg.png`;
 
   return (
     <div className="slide ms3-slide" id="achievements">
@@ -249,7 +250,7 @@ export default function AchievementsSlide({ active, direction = 'down' }) {
           animate={active ? "visible" : "hidden"}
           variants={hudVariants}
         >
-          <img src="/slide3-bg.png" alt="John Wick" className="ms3-john-img" draggable={false} />
+          <img src={johnImageSrc} alt="John Wick" className="ms3-john-img" draggable={false} />
           
           <div className="ms3-left-hud">
             <h2 className="ms3-hud-name">JOHN WICK</h2>

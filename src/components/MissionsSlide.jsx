@@ -307,6 +307,7 @@ function Particles() {
 export default function MissionsSlide({ active, direction }) {
   const slideRef = useRef(null);
   const [phase, setPhase] = useState('idle');
+  const portraitSrc = `${import.meta.env.BASE_URL}john-portrait.png`;
 
   useEffect(() => {
     if (active) {
@@ -351,7 +352,7 @@ export default function MissionsSlide({ active, direction }) {
       <div className="ms2-content-grid">
         {/* LEFT — Portrait + HUD */}
         <div className={`ms2-portrait-wrap ${revealed ? 'ms2-portrait-wrap--visible' : ''}`}>
-          <img src="/john-portrait.png" alt="John Wick" className="ms2-portrait-img" draggable={false} />
+          <img src={portraitSrc} alt="John Wick" className="ms2-portrait-img" draggable={false} />
           <PortraitHUD visible={revealed} />
           <div className="ms2-portrait-fade-right" aria-hidden="true" />
           <div className="ms2-portrait-fade-bottom" aria-hidden="true" />

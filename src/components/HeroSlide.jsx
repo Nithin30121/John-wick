@@ -163,6 +163,7 @@ function AnimatedCounter({ target, suffix = '', duration = 1800, startDelay = 0,
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function HeroSlide({ active }) {
   const [currentTime, setCurrentTime] = useState('');
+  const backgroundVideoSrc = `${import.meta.env.BASE_URL}jw1.mp4`;
 
   useEffect(() => {
     const updateNYClock = () => {
@@ -197,7 +198,7 @@ export default function HeroSlide({ active }) {
           className="background-video"
           aria-hidden="true"
         >
-          <source src="/jw1.mp4" type="video/mp4" />
+          <source src={backgroundVideoSrc} type="video/mp4" />
         </video>
         <div className="video-fallback-gradient"></div>
       </div>

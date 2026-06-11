@@ -174,6 +174,7 @@ const Radar = ({ isInView }) => (
 export default function LegendSlide() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const portraitSrc = `${import.meta.env.BASE_URL}john-portrait.png`;
 
   return (
     <div className="slide ms5-slide" id="legend" ref={ref}>
@@ -307,7 +308,7 @@ export default function LegendSlide() {
                   </div>
                 </div>
                 <div className="ms5r-codename-photo">
-                  <img src="/john-portrait.png" alt="John Wick" className="ms5r-photo-img" />
+                  <img src={portraitSrc} alt="John Wick" className="ms5r-photo-img" />
                   <div className="ms5r-photo-placeholder" />
                 </div>
               </div>
