@@ -1,0 +1,228 @@
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  background: rgba(0, 174, 239, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 174, 239, 0.12);
+  border-radius: 6px;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+
+.ct-contact-card:hover {
+  background: rgba(0, 174, 239, 0.08);
+  border-color: var(--card-color);
+  transform: translateX(8px);
+  box-shadow:
+    0 0 20px rgba(0, 174, 239, 0.1),
+    inset 0 0 30px rgba(0, 174, 239, 0.03);
+}
+
+.ct-card-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: linear-gradient(135deg, rgba(0, 174, 239, 0.15), rgba(255, 46, 196, 0.15));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ct-contact-card:hover .ct-card-glow {
+  opacity: 1;
+}
+
+/* Card Icon */
+.ct-card-icon-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.ct-card-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+  color: var(--card-color);
+  filter: drop-shadow(0 0 6px var(--card-color));
+}
+
+.ct-card-icon-ring {
+  position: absol
+<truncated 7974 bytes>
+  gap: 30px;
+  white-space: nowrap;
+  animation: ct-ticker-scroll 30s linear infinite;
+}
+
+.ct-ticker-item {
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: rgba(0, 174, 239, 0.25);
+}
+
+@keyframes ct-ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Vignette ─────────────────────────────────────────────────────── */
+.ct-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(ellipse at 70% 50%, transparent 30%, rgba(5, 5, 16, 0.35) 100%);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .ct-main-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .ct-content {
+    padding: 10px 40px;
+  }
+  .ct-topbar {
+    padding: 15px 40px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ct-bottombar {
+    padding: 10px 40px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ct-title {
+    font-size: 32px;
+    letter-spacing: 4px;
+  }
+  .ct-content {
+    padding: 10px 20px;
+  }
+  .ct-topbar {
+    padding: 10px 20px;
+  }
+  .ct-card-label {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+  .ct-data-stream { display: none; }
+  .ct-worldmap-strip { height: 50px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TRANSITION OVERLAY — Cinematic Section Scanner
+   Plays on every slide change, both directions
+   ══════════════════════════════════════════════════════════════════ */
+
+.to-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Dark Backdrop ────────────────────────────────────────────────── */
+.to-backdrop {
+  position: absolute;
+  inset: 0;
+  background: #050510;
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity 0.12s ease-out;
+}
+
+.to-overlay--darken .to-backdrop,
+.to-overlay--scan .to-backdrop,
+.to-overlay--text .to-backdrop {
+  opacity: 0.78;
+}
+
+.to-overlay--reveal .to-backdrop {
+  opacity: 0;
+  transition: opacity 0.25s ease-in;
+}
+
+/* ── Red Scanner Line ─────────────────────────────────────────────── 
+<truncated 2099 bytes>
+e;
+}
+
+.to-terminal--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.to-terminal-bracket {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: #ff2b2b;
+  text-shadow: 0 0 12px rgba(255, 43, 43, 0.6);
+  letter-spacing: 4px;
+}
+
+.to-terminal-text {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+}
+
+.to-terminal-prefix {
+  color: #ff2b2b;
+  text-shadow: 0 0 6px rgba(255, 43, 43, 0.5);
+}
+
+.to-terminal-cursor {
+  color: #ff2b2b;
+  animation: to-cursor-blink 0.4s step-end infinite;
+}
+
+@keyframes to-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── HUD Corner Labels ───────────────────────────────────────────── */
+.to-hud {
+  position: absolute;
+  font-family: 'Courier New', monospace;
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: rgba(255, 43, 43, 0.35);
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity 0.15s ease;
+}
+
+.to-overlay--scan .to-hud,
+.to-overlay--text .to-hud {
+  opacity: 1;
+}
+
+.to-overlay--reveal .to-hud {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.to-hud--tl { top: 20px; left: 25px; }
+.to-hud--tr { top: 20px; right: 25px; text-align: right; }
+.to-hud--bl { bottom: 20px; left: 25px; }
+.to-hud--br { bottom: 20px; right: 25px; text-align: right; }
