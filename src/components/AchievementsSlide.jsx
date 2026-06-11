@@ -1,6 +1,33 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+const makeAvatarDataUri = (label, accent) => {
+  const initials = label
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('');
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="${label}">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#111318" />
+          <stop offset="100%" stop-color="#050608" />
+        </linearGradient>
+      </defs>
+      <rect width="240" height="240" rx="120" fill="url(#g)" />
+      <circle cx="120" cy="96" r="42" fill="none" stroke="${accent}" stroke-width="4" opacity="0.55" />
+      <path d="M48 208c10-41 38-62 72-62s62 21 72 62" fill="none" stroke="${accent}" stroke-width="4" opacity="0.35" />
+      <circle cx="120" cy="88" r="22" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.16" />
+      <text x="120" y="136" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" letter-spacing="2" fill="#ffffff">${initials}</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
 const TARGETS = [
   {
     id: 1,
@@ -10,7 +37,7 @@ const TARGETS = [
     name: 'ALEXEI FEDOROV',
     location: 'MOSCOW, RU',
     threat: 'HIGH',
-    img: 'https://i.pravatar.cc/150?img=11', // Placeholder
+    img: makeAvatarDataUri('ALEXEI FEDOROV', '#ff2b2b'),
   },
   {
     id: 2,
@@ -20,7 +47,7 @@ const TARGETS = [
     name: 'VITTORIO SANTINI',
     location: 'ROME, IT',
     threat: 'HIGH',
-    img: 'https://i.pravatar.cc/150?img=68', // Placeholder
+    img: makeAvatarDataUri('VITTORIO SANTINI', '#ff2b2b'),
   },
   {
     id: 3,
@@ -30,7 +57,7 @@ const TARGETS = [
     name: 'MARCUS VOLKOV',
     location: 'BERLIN, DE',
     threat: 'EXTREME',
-    img: 'https://i.pravatar.cc/150?img=59', // Placeholder
+    img: makeAvatarDataUri('MARCUS VOLKOV', '#ff2b2b'),
   }
 ];
 

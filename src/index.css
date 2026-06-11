@@ -137,7 +137,7 @@ body {
   cursor: var(--cursor-default) !important;
 }
 
-a, button, [role="button"], input, label, select, textarea, .stat-card, .social-item, .ms2-mission-card, .email-btn, .scroll-indicator {
+a, button, [role="button"], input, label, select, textarea, .stat-card, .ms2-mission-card, .email-btn, .scroll-indicator {
   cursor: var(--cursor-pointer) !important;
 }
 

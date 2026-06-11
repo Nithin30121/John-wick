@@ -309,7 +309,6 @@ export default function LegendSlide() {
                 </div>
                 <div className="ms5r-codename-photo">
                   <img src={portraitSrc} alt="John Wick" className="ms5r-photo-img" />
-                  <div className="ms5r-photo-placeholder" />
                 </div>
               </div>
 

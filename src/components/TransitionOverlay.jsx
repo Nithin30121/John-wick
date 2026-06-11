@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 /* ─── Transition Messages per direction (default scanner) ─────────── */
 const MESSAGES_DOWN = [
   'ACCESSING INTELLIGENCE DATABASE...',
-  'LOADING CLASSIFIED DOSSIER...',
+  'ACCESSING CLASSIFIED DOSSIER...',
   'DECRYPTING SECURE FILES...',
   'OPENING MISSION BRIEFING...',
   'RETRIEVING OPERATOR DATA...',

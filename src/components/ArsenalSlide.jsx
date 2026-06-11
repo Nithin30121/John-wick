@@ -4,7 +4,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 /* ─── Data ────────────────────────────────────────────────────────── */
 const TERMINAL_LINES = [
   '> INITIALIZING ARSENAL...',
-  '> LOADING OPERATOR PROFILE...',
+  '> ACCESSING OPERATOR PROFILE...',
   '> VERIFYING SECURITY CLEARANCE...',
   '> ESTABLISHING SECURE CHANNEL...',
   '> READING CAPABILITY MATRIX...',

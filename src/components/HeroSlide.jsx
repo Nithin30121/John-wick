@@ -1,25 +1,55 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+const createHeroPoster = () => {
+  const horizontalLines = Array.from({ length: 18 }, (_, index) => (
+    `<line x1="0" y1="${index * 50}" x2="1600" y2="${index * 50}" />`
+  )).join('');
+  const verticalLines = Array.from({ length: 28 }, (_, index) => (
+    `<line x1="${index * 60}" y1="0" x2="${index * 60}" y2="900" />`
+  )).join('');
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#020203" />
+          <stop offset="100%" stop-color="#000000" />
+        </linearGradient>
+        <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#ff2b2b" stop-opacity="0" />
+          <stop offset="50%" stop-color="#ff2b2b" stop-opacity="0.2" />
+          <stop offset="100%" stop-color="#ff2b2b" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <rect width="1600" height="900" fill="url(#bg)" />
+      <g opacity="0.16" stroke="#17171b" stroke-width="1">
+        ${horizontalLines}
+        ${verticalLines}
+      </g>
+      <rect y="500" width="1600" height="2" fill="url(#scan)" opacity="0.8" />
+      <rect y="508" width="1600" height="1" fill="#ff2b2b" opacity="0.08" />
+      <rect y="492" width="1600" height="1" fill="#ff2b2b" opacity="0.08" />
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
+const heroPosterSrc = createHeroPoster();
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
-const InstagramIcon = () => (
+const SignalIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" strokeWidth="2"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="currentColor" strokeWidth="2"/>
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <circle cx="12" cy="12" r="2" fill="currentColor" />
+    <path d="M12 4v3M12 17v3M4 12h3M17 12h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
-const GithubIcon = () => (
+const ArchiveIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const LinkedinIcon = () => (
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <rect x="2" y="9" width="4" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="4" cy="4" r="2" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <path d="M4 6h16v12H4z" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M8 10h8M8 14h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
   </svg>
 );
 
@@ -85,7 +115,7 @@ function GlitchText({ text, className, onGlitch }) {
       }, 30);
     };
 
-    setTimeout(triggerGlitch, 800);
+    const initialTimer = setTimeout(triggerGlitch, 800);
 
     const scheduleNext = () => {
       const delay = 4000 + Math.random() * 4000;
@@ -97,10 +127,11 @@ function GlitchText({ text, className, onGlitch }) {
     scheduleNext();
 
     return () => {
+      clearTimeout(initialTimer);
       clearInterval(intervalRef.current);
       clearTimeout(timeoutRef.current);
     };
-  }, [text]);
+  }, [text, onGlitch]);
 
   return <span className={`${className}${glitching ? ' text-scrambling' : ''}`}>{displayed}</span>;
 }
@@ -135,8 +166,8 @@ function AnimatedCounter({ target, suffix = '', duration = 1800, startDelay = 0,
 
   useEffect(() => {
     if (!active) {
-      setValue(0);
-      return;
+      const resetTimer = setTimeout(() => setValue(0), 0);
+      return () => clearTimeout(resetTimer);
     }
     const timer = setTimeout(() => {
       const startTime = performance.now();
@@ -163,6 +194,9 @@ function AnimatedCounter({ target, suffix = '', duration = 1800, startDelay = 0,
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function HeroSlide({ active }) {
   const [currentTime, setCurrentTime] = useState('');
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const videoRef = useRef(null);
   const backgroundVideoSrc = `${import.meta.env.BASE_URL}jw1.mp4`;
 
   useEffect(() => {
@@ -176,7 +210,7 @@ export default function HeroSlide({ active }) {
           hour12: true
         }).format(new Date());
         setCurrentTime(timeStr);
-      } catch (err) {
+      } catch {
         const d = new Date();
         setCurrentTime(d.toLocaleTimeString());
       }
@@ -186,16 +220,90 @@ export default function HeroSlide({ active }) {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return undefined;
+
+    const logPrefix = '[Hero video]';
+    const attemptPlayback = async (reason) => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+
+      try {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          await playPromise;
+        }
+        setVideoReady(true);
+        setVideoFailed(false);
+        console.info(`${logPrefix} autoplay started`, { reason, sourceUrl: video.currentSrc || backgroundVideoSrc });
+      } catch (error) {
+        setVideoFailed(true);
+        console.warn(`${logPrefix} autoplay failed`, { reason, sourceUrl: video.currentSrc || backgroundVideoSrc, error });
+      }
+    };
+
+    const handleLoadedData = () => {
+      setVideoFailed(false);
+      console.info(`${logPrefix} video loaded`, { sourceUrl: video.currentSrc || backgroundVideoSrc });
+      attemptPlayback('loadeddata');
+    };
+
+    const handleCanPlay = () => {
+      setVideoReady(true);
+      setVideoFailed(false);
+      console.info(`${logPrefix} video can play`, { sourceUrl: video.currentSrc || backgroundVideoSrc });
+      attemptPlayback('canplay');
+    };
+
+    const handleError = () => {
+      setVideoFailed(true);
+      console.error(`${logPrefix} video failed to load`, {
+        sourceUrl: video.currentSrc || backgroundVideoSrc,
+        error: video.error,
+      });
+    };
+
+    console.info(`${logPrefix} source URL`, backgroundVideoSrc);
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
+
+    attemptPlayback('mount');
+
+    return () => {
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
+    };
+  }, [backgroundVideoSrc]);
+
   return (
     <div className="hero-slide slide" id="home">
       {/* Background */}
       <div className="video-background-container">
+        <img
+          src={heroPosterSrc}
+          alt=""
+          className="video-poster-fallback"
+          aria-hidden="true"
+          draggable={false}
+        />
         <video
+          ref={videoRef}
           autoPlay
-          loop
           muted
+          defaultMuted
+          loop
           playsInline
-          className="background-video"
+          webkit-playsinline="true"
+          preload="auto"
+          poster={heroPosterSrc}
+          className={`background-video${videoFailed ? ' is-failed' : ''}${videoReady ? ' is-ready' : ''}`}
           aria-hidden="true"
         >
           <source src={backgroundVideoSrc} type="video/mp4" />
@@ -225,31 +333,6 @@ export default function HeroSlide({ active }) {
         </a>
       </header>
 
-      {/* Left Sidebar Social Handles */}
-      <aside className="left-sidebar">
-        <div className="sidebar-line"></div>
-        <ul className="social-list">
-          <li>
-            <a href="https://instagram.com" className="social-item" target="_blank" rel="noreferrer">
-              <InstagramIcon />
-              <span className="social-text">IG/WOODROCH</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com" className="social-item" target="_blank" rel="noreferrer">
-              <GithubIcon />
-              <span className="social-text">GH/WOODROCH</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://linkedin.com" className="social-item" target="_blank" rel="noreferrer">
-              <LinkedinIcon />
-              <span className="social-text">LI/WOODROCH</span>
-            </a>
-          </li>
-        </ul>
-      </aside>
-
       {/* Main Content Area */}
       <main className="hero-content">
         <span className="hero-subtitle">
@@ -273,9 +356,6 @@ export default function HeroSlide({ active }) {
 
       {/* Bottom Left Scroll Indicator */}
       <div className="bottom-left-section">
-        <div className="logo-circle">
-          <span>N</span>
-        </div>
         <a href="#missions" className="scroll-indicator">
           <span className="scroll-text">SCROLL DOWN</span>
           <div className="scroll-line-container">
