@@ -162,7 +162,7 @@ export default function HeroSlide({ active }) {
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const videoRef = useRef(null);
-  const backgroundVideoSrc = `${import.meta.env.BASE_URL}jw1.mp4?v=2`;
+  const backgroundVideoSrc = `${import.meta.env.BASE_URL}jw1-original.mp4`;
 
   useEffect(() => {
     const updateNYClock = () => {
