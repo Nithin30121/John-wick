@@ -1,41 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const createHeroPoster = () => {
-  const horizontalLines = Array.from({ length: 18 }, (_, index) => (
-    `<line x1="0" y1="${index * 50}" x2="1600" y2="${index * 50}" />`
-  )).join('');
-  const verticalLines = Array.from({ length: 28 }, (_, index) => (
-    `<line x1="${index * 60}" y1="0" x2="${index * 60}" y2="900" />`
-  )).join('');
-
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#020203" />
-          <stop offset="100%" stop-color="#000000" />
-        </linearGradient>
-        <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#ff2b2b" stop-opacity="0" />
-          <stop offset="50%" stop-color="#ff2b2b" stop-opacity="0.2" />
-          <stop offset="100%" stop-color="#ff2b2b" stop-opacity="0" />
-        </linearGradient>
-      </defs>
-      <rect width="1600" height="900" fill="url(#bg)" />
-      <g opacity="0.16" stroke="#17171b" stroke-width="1">
-        ${horizontalLines}
-        ${verticalLines}
-      </g>
-      <rect y="500" width="1600" height="2" fill="url(#scan)" opacity="0.8" />
-      <rect y="508" width="1600" height="1" fill="#ff2b2b" opacity="0.08" />
-      <rect y="492" width="1600" height="1" fill="#ff2b2b" opacity="0.08" />
-    </svg>
-  `;
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-};
-
-const heroPosterSrc = createHeroPoster();
+const heroPosterSrc = `${import.meta.env.BASE_URL}jw1-poster.jpg`;
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
 const SignalIcon = () => (
@@ -197,7 +162,7 @@ export default function HeroSlide({ active }) {
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const videoRef = useRef(null);
-  const backgroundVideoSrc = `${import.meta.env.BASE_URL}jw1.mp4`;
+  const backgroundVideoSrc = `${import.meta.env.BASE_URL}jw1.mp4?v=2`;
 
   useEffect(() => {
     const updateNYClock = () => {
@@ -238,11 +203,10 @@ export default function HeroSlide({ active }) {
         if (playPromise !== undefined) {
           await playPromise;
         }
-        setVideoReady(true);
+        if (!video.paused) setVideoReady(true);
         setVideoFailed(false);
         console.info(`${logPrefix} autoplay started`, { reason, sourceUrl: video.currentSrc || backgroundVideoSrc });
       } catch (error) {
-        setVideoFailed(true);
         console.warn(`${logPrefix} autoplay failed`, { reason, sourceUrl: video.currentSrc || backgroundVideoSrc, error });
       }
     };
@@ -254,10 +218,18 @@ export default function HeroSlide({ active }) {
     };
 
     const handleCanPlay = () => {
-      setVideoReady(true);
       setVideoFailed(false);
       console.info(`${logPrefix} video can play`, { sourceUrl: video.currentSrc || backgroundVideoSrc });
       attemptPlayback('canplay');
+    };
+
+    const handlePlaying = () => {
+      setVideoReady(true);
+      setVideoFailed(false);
+    };
+
+    const handlePause = () => {
+      if (!video.ended) setVideoReady(false);
     };
 
     const handleError = () => {
@@ -268,17 +240,39 @@ export default function HeroSlide({ active }) {
       });
     };
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') attemptPlayback('visibilitychange');
+    };
+
+    const handleUserInteraction = () => attemptPlayback('user-interaction');
+    const retryEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel'];
+    const startupRetryInterval = window.setInterval(() => {
+      if (video.paused && video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        attemptPlayback('startup-retry');
+      }
+    }, 250);
+
     console.info(`${logPrefix} source URL`, backgroundVideoSrc);
     video.addEventListener('loadeddata', handleLoadedData);
     video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('playing', handlePlaying);
+    video.addEventListener('pause', handlePause);
     video.addEventListener('error', handleError);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    retryEvents.forEach((eventName) => window.addEventListener(eventName, handleUserInteraction, { passive: true }));
 
+    if (!video.paused) setVideoReady(true);
     attemptPlayback('mount');
 
     return () => {
       video.removeEventListener('loadeddata', handleLoadedData);
       video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('playing', handlePlaying);
+      video.removeEventListener('pause', handlePause);
       video.removeEventListener('error', handleError);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      retryEvents.forEach((eventName) => window.removeEventListener(eventName, handleUserInteraction));
+      clearInterval(startupRetryInterval);
     };
   }, [backgroundVideoSrc]);
 

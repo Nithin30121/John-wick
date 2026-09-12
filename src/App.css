@@ -46,7 +46,7 @@
 
 .background-video {
   z-index: 1;
-  opacity: 0.9;
+  opacity: 0;
   filter: contrast(1.02) brightness(0.92) saturate(1);
   transform: translateZ(0);
   transition: opacity 180ms ease;
@@ -5247,4 +5247,3 @@
   .ct-data-stream { display: none; }
   .ct-worldmap-strip { height: 50px; }
 }
-
