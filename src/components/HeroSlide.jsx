@@ -191,6 +191,8 @@ export default function HeroSlide({ active }) {
 
     const logPrefix = '[Hero video]';
     const attemptPlayback = async (reason) => {
+      if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || !video.paused) return;
+
       video.muted = true;
       video.defaultMuted = true;
       video.playsInline = true;
@@ -244,10 +246,8 @@ export default function HeroSlide({ active }) {
       if (document.visibilityState === 'visible') attemptPlayback('visibilitychange');
     };
 
-    const handleUserInteraction = () => attemptPlayback('user-interaction');
-    const retryEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel'];
     const startupRetryInterval = window.setInterval(() => {
-      if (video.paused && video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      if (video.paused && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
         attemptPlayback('startup-retry');
       }
     }, 250);
@@ -259,10 +259,10 @@ export default function HeroSlide({ active }) {
     video.addEventListener('pause', handlePause);
     video.addEventListener('error', handleError);
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    retryEvents.forEach((eventName) => window.addEventListener(eventName, handleUserInteraction, { passive: true }));
 
-    if (!video.paused) setVideoReady(true);
-    attemptPlayback('mount');
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      attemptPlayback('mount');
+    }
 
     return () => {
       video.removeEventListener('loadeddata', handleLoadedData);
@@ -271,7 +271,6 @@ export default function HeroSlide({ active }) {
       video.removeEventListener('pause', handlePause);
       video.removeEventListener('error', handleError);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      retryEvents.forEach((eventName) => window.removeEventListener(eventName, handleUserInteraction));
       clearInterval(startupRetryInterval);
     };
   }, [backgroundVideoSrc]);
@@ -291,7 +290,6 @@ export default function HeroSlide({ active }) {
           ref={videoRef}
           autoPlay
           muted
-          defaultMuted
           loop
           playsInline
           webkit-playsinline="true"
